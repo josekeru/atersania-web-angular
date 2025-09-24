@@ -1,0 +1,98 @@
+@use 'variables' as *;
+
+.hero {
+  height: 82vh;
+  background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4));
+    // url('/assets/hero.jpg') center/cover no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  text-align: center;
+
+  .content {
+    max-width: 600px;
+
+    h1 {
+      font-family: 'Pacifico', cursive;
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+
+      .btn {
+        background: $color-accent;
+        padding: 0.8rem 1.5rem;
+        border-radius: 8px;
+        color: $color-text;
+        text-decoration: none;
+        font-weight: 600;
+        cursor: pointer;
+
+        &.btn-secondary {
+          background: $color-secondary;
+        }
+
+        &:hover {
+          opacity: 0.9;
+        }
+      }
+    }
+  }
+}
+
+.btn-login {
+  background: #b80ba9;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 20px;
+  margin-left: 2px;
+  margin-bottom: -15px;
+
+  &:hover {
+    background: #5f055b;
+    opacity: 0.9;
+  }
+}
+
+.btn-register {
+  background: #0ead13;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: -14px;
+
+  &:hover {
+    background: #09690c;
+    opacity: 0.9;
+  }
+}
+
+
+/* Quitar flechas en Chrome, Edge y Safari */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Quitar flechas en Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}

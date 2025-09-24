@@ -1,0 +1,56 @@
+.contacto {
+  padding: 3rem 2rem;
+  text-align: center;
+
+  form {
+    max-width: 500px;
+    margin: 0 auto;
+    text-align: left;
+
+    .form-group {
+      margin-bottom: 1.5rem;
+
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+      }
+
+      input, textarea {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid #ccc;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+      }
+    }
+
+    button {
+      display: inline-block;
+      padding: 0.8rem 1.5rem;
+      background: #ff6f61;
+      color: #fff;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: background 0.3s;
+
+      &:hover {
+        background: #e85c50;
+      }
+    }
+  }
+}
+
+
+/* Quitar flechas en Chrome, Edge y Safari */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Quitar flechas en Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}

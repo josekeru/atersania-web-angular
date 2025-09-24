@@ -1,0 +1,95 @@
+<section class="products">
+  <h2>Productos</h2>
+  <div class="grid">
+    <div class="card" *ngFor="let product of products">
+      <img *ngIf="product.image" [src]="product.image" />
+      <h3>{{ product.name }}</h3>
+      <div class="container">
+        <span class="description">{{ product.description }}</span>
+        <span class="quantity">Quedan: {{ product.quantity }} unidades</span>
+        <span class="price">Precio por unidad: {{ product.price }} €</span>
+        <span class="temp-processing">Tiempo de procesamiento: {{ product.tempProcessing }} €</span>
+        <button class="btn btn-shop" (click)="addProduct(product)">
+          Comprar
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODAL SI NO HAY USUARIO REGISTRADO -->
+<div class="modal-backdrop" *ngIf="showModalWithoutUser">
+  <div class="modal">
+    <div class="modal-header">
+      <button class="close-btn" (click)="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <h1>Debes rellenar los datos para el envío</h1>
+      <form [formGroup]="orderForm" (ngSubmit)="addOrderWithoutUser()">
+
+        <div class="form-field">
+          <label for="userName">Nombre</label>
+          <input id="userName" type="text" formControlName="userName" required />
+        </div>
+
+        <div class="form-field">
+          <label for="address">Dirección</label>
+          <input id="address" type="text" formControlName="address" required />
+        </div>
+
+        <div class="form-field">
+          <label for="email">Email</label>
+          <input id="email" type="email" formControlName="email" required />
+        </div>
+
+        <div class="form-field">
+          <label for="phone">Teléfono</label>
+          <input id="phone" type="number" formControlName="phone" required />
+        </div>
+        
+      <div class="buttons-footer">
+        <button class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+        <button type="submit" [disabled]="orderForm.invalid">Comprar</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL SI HAY USUARIO REGISTRADO -->
+<div class="modal-backdrop" *ngIf="showModalEndProcess">
+  <div class="modal">
+    <div class="modal-header">
+      <button class="close-btn" (click)="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <h1>Confirma tu pedido</h1>
+      <div class="order-details" *ngIf="selectedProduct">
+        <p><strong>Producto:</strong> {{ selectedProduct.name }}</p>
+        <p><strong>Descripción:</strong> {{ selectedProduct.description }}</p>
+        <p><strong>Precio por unidad:</strong> {{ selectedProduct.price }} €</p>
+        <p><strong>Tiempo de procesamiento una vez pagado:</strong> {{ selectedProduct.tempProcessing }} días</p>
+
+
+        <p><strong>Unidades disponibles:</strong> {{ selectedProduct.quantity }}</p>
+        <p><strong>¿Cuántas unidades quieres?:</strong> {{ selectUnits }}</p>
+        <button class="incre-button" (click)="increment(selectedProduct, 'decre')">-</button>
+        <span>{{ selectUnits }}</span>
+        <button class="incre-button" (click)="increment(selectedProduct, 'incre')">+</button>
+        <p><strong>Precio total:</strong> {{ priceTotalSum }} €</p>
+
+
+      </div>
+      <div class="buttons-footer">
+        <button class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+        <button class="btn btn-primary" (click)="addOrder()">Confirmar Pedido</button>
+      </div>
+    </div>
+  </div>
+</div>
+<app-message-modal
+  [title]="modalTitle"
+  [message]="modalMessage"
+  [isVisible]="showModal"
+  (closed)="onModalClosed()">
+</app-message-modal>

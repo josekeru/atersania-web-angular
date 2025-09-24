@@ -1,0 +1,45 @@
+<div class="dashboard-container">
+  <h2>Hola {{ customerName }}!</h2>
+  <h3>Históricos de pedidos</h3>
+
+  <!-- Botones de filtro -->
+  <div class="filter-tabs">
+    <button 
+      *ngFor="let status of statuses" 
+      (click)="setFilter(status)"
+      [class.active]="currentFilter === status">
+      {{ status }}
+    </button>
+  </div>
+
+  <!-- Lista de pedidos filtrados -->
+  <div class="order-list" *ngIf="filteredOrders.length > 0; else noOrders">
+    <div class="order-card" *ngFor="let order of filteredOrders">
+      <h4>Pedidos #{{ order.orderNumber }}</h4>
+      <h4>
+        <strong>Estado: </strong>
+        <span [ngClass]="{
+          'no-pagado': order.status === 'No pagado',
+          'pagado': order.status === 'Pagado',
+          'produciendo': order.status === 'Produciendo',
+          'terminado': order.status === 'Terminado',
+          'enviado': order.status === 'Enviado',
+          'recibido': order.status === 'Recibido'
+        }">{{ order.status }}</span>
+      </h4>
+      <p><strong>Producto:</strong> {{ order.productName }}</p>
+      <p><strong>Dirección de envío:</strong> {{ order.address }}</p>
+      <p><strong>Tiempo estimado:</strong> {{ order.deliveryTime }}</p>
+      <p><strong>Fecha creación del pedido:</strong> {{ order.createOrder | date:'dd-MM-yyyy' }}</p>
+      <p><strong>Fecha inicio del pedido:</strong> {{ order.startDate | date:'dd-MM-yyyy' }}</p>
+      <p><strong>Fecha fin del pedido:</strong> {{ order.endDate | date:'dd-MM-yyyy' }}</p>
+      <p><strong>Precio:</strong> {{ order.price }} €</p>
+      <p><strong>Unidad/es pedidas:</strong> {{ order.units }}</p>
+      <p><strong>Precio total:</strong> {{ order.totalPrice }} €</p>
+    </div>
+  </div>
+
+  <ng-template #noOrders>
+    <p>No tienes pedidos realizados aún.</p>
+  </ng-template>
+</div>

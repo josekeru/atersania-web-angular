@@ -1,0 +1,32 @@
+<section class="contacto">
+  <h2>Contacto</h2>
+  <form (submit)="sendEmail($event)">
+    <div class="form-group">
+      <label for="name">Nombre</label>
+      <input type="text" id="name" name="name" required />
+    </div>
+    <div class="form-group">
+      <label for="email">Correo electrónico</label>
+      <input type="email" id="email" name="email" required />
+    </div>
+    <div class="form-group">
+      <label for="message">Mensaje</label>
+      <textarea id="message" name="message" rows="5" required></textarea>
+    </div>
+    <div class="form-group">
+      <label for="phone">Teléfono</label>
+      <input id="phone" type="number" name="phone" required />
+    </div>
+    <button type="submit">Enviar</button>
+    <div *ngIf="messageSendEmail" class="sending-message">
+      <p>Se está enviando el mensaje</p>
+    </div>
+  </form>
+</section>
+
+<app-message-modal
+  [title]="modalTitle"
+  [message]="modalMessage"
+  [isVisible]="showModal"
+  (closed)="onModalClosed()">
+</app-message-modal>

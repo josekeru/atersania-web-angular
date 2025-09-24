@@ -1,0 +1,230 @@
+<div class="tabs">
+  <button (click)="changeTab('orders')" [class.active]="activeTab === 'orders'">Pedidos</button>
+  <button (click)="changeTab('products')" [class.active]="activeTab === 'products'">Productos</button>
+</div>
+
+<!-- TABLA DE PEDIDOS -->
+<div *ngIf="activeTab === 'orders'" class="orders-table">
+  <div class="filter-buttons">
+  <button [class.active]="activeFilter === 'all'" (click)="setFilter('all')">Todos</button>
+  <button [class.active]="activeFilter === 'no pagado'" (click)="setFilter('no pagado')">No Pagado</button>
+  <button [class.active]="activeFilter === 'pagado'" (click)="setFilter('pagado')">Pagado</button>
+  <button [class.active]="activeFilter === 'produciendo'" (click)="setFilter('produciendo')">Produciendo</button>
+  <button [class.active]="activeFilter === 'terminado'" (click)="setFilter('terminado')">Terminado</button>
+  <button [class.active]="activeFilter === 'enviado'" (click)="setFilter('enviado')">Enviado</button>
+</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Número Pedido</th>
+        <th>Usuario</th>
+        <th>Producto</th>
+        <th>Dirección</th>
+        <th>Email</th>
+        <th>Teléfono</th>
+        <th>Fecha pago</th>
+        <th>Unidades pedidas</th>
+        <th>Precio total</th>
+        <th>Estado</th>
+        <th>Acción</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let order of filteredOrders">
+        <td>{{ order.orderNumber }}</td>
+        <td>{{ order.userName }}</td>
+        <td>{{ order.productName }}</td>
+        <td>{{ order.address }}</td>
+        <td>{{ order.email }}</td>
+        <td>{{ order.phone || '-' }}</td>
+        <td>{{ order.startDate | date:'dd-MM-yyyy' }}</td>
+        <td>{{ order.units || '-' }}</td>
+        <td>{{ order.totalPrice || '-' }} €</td>
+        <td>
+          <span [class]="getStatusClass(order.status)">
+            {{ order.status }}
+          </span>
+        </td>
+        <td>
+          <button (click)="openEditOrderModal(order)">Editar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- GRID DE PRODUCTOS -->
+<div *ngIf="activeTab === 'products'" class="add-product-container">
+  <button class="add-product-btn" (click)="openAddNewProductModal()">Añadir producto</button>
+</div>
+
+<div *ngIf="activeTab === 'products'" class="products-grid">
+  <div class="product-card" *ngFor="let product of products">
+    <img [src]="product.image" [alt]="product.name" />
+    <div class="info">
+      <p><strong>ID:</strong> {{ product.id }}</p>
+      <p><strong>{{ product.name }}</strong></p>
+      <p>{{ product.description }}</p>
+      <p>Precio: {{ product.price }}</p>
+      <p>Tiempo de procesado: {{ product.tempProcessing }}</p>
+      <p>Cantidad: {{ product.quantity }}</p>
+    </div>
+    <div class="actions">
+      <button class="incre-button" (click)="increment(product, 'decre')">-</button>
+      <span>{{ product.counter }}</span>
+      <button class="incre-button" (click)="increment(product, 'incre')">+</button>
+      <button class="save-product" (click)="saveQuantityProduct(product)">Guardar</button>
+    </div>
+    <div class="container-buttons">
+      <button class="edit-product" (click)="openEditProductModal(product)">Editar</button>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- MODAL editar pedido -->
+<div class="modal-backdrop" *ngIf="showModalEditOrder">
+  <div class="modal">
+    <h2>Editar Pedido</h2>
+    <div *ngIf="selectedOrder">
+      <p><strong>Número Pedido:</strong> {{ selectedOrder.orderNumber }}</p>
+      <p><strong>Usuario:</strong> {{ selectedOrder.userName }}</p>
+      <p><strong>Descripción:</strong> {{ selectedOrder.description }}</p>
+      <p><strong>Producto:</strong> {{ selectedOrder.productName }}</p>
+      <p><strong>Dirección:</strong> {{ selectedOrder.address }}</p>
+      <p><strong>Email:</strong> {{ selectedOrder.email }}</p>
+      <p><strong>Teléfono:</strong> {{ selectedOrder.phone || '-' }}</p>
+      <p><strong>Unidades pedidas:</strong> {{ selectedOrder.units }}</p>
+      <p><strong>Precio total:</strong> {{ selectedOrder.totalPrice }}</p>
+
+      <!-- Estado actual -->
+      <p><strong>Estado actual:</strong> {{ selectedOrder.status }}</p>
+
+      <!-- Estado nuevo si se selecciona -->
+      <p *ngIf="newStatus && newStatus !== selectedOrder.status">
+        <strong>El estado se va a cambiar por:</strong> {{ newStatus }}
+      </p>
+
+      <div class="status-buttons">
+        <button 
+          class="status no-pagado"
+          [class.active]="newStatus === 'No pagado'"
+          (click)="selectStatus('No pagado')">No Pagado</button>
+
+        <button 
+          class="status pagado"
+          [class.active]="newStatus === 'Pagado'"
+          (click)="selectStatus('Pagado')">Pagado</button>
+
+        <button 
+          class="status produciendo"
+          [class.active]="newStatus === 'Produciendo'"
+          (click)="selectStatus('Produciendo')">Produciendo</button>
+
+        <button 
+          class="status terminado"
+          [class.active]="newStatus === 'Terminado'"
+          (click)="selectStatus('Terminado')">Terminado</button>
+
+        <button 
+          class="status enviado"
+          [class.active]="newStatus === 'Enviado'"
+          (click)="selectStatus('Enviado')">Enviado</button>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="cancel" (click)="closeEditOrderModal()">Cancelar</button>
+      <button class="save" (click)="editOrder()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL AÑADIR PRODUCTO -->
+<div class="modal-backdrop" *ngIf="showProductModalAdd">
+  <div class="modal">
+    <h2>Nuevo Producto</h2>
+    <form>
+      <label>
+        Nombre:
+        <input type="text" [(ngModel)]="newProduct.name" name="name" required />
+      </label>
+
+      <label>
+        Descripción:
+        <input type="text" [(ngModel)]="newProduct.description" name="description" required />
+      </label>
+
+      <label>
+        Cantidad:
+        <input type="number" [(ngModel)]="newProduct.quantity" name="quantity" required />
+      </label>
+
+      <label>
+        Precio:
+        <input type="number" [(ngModel)]="newProduct.price" name="price" required />
+      </label>
+
+      <label>
+        Tiempo de procesado:
+        <input type="string" [(ngModel)]="newProduct.tempProcessing" name="tempProcessing" required />
+      </label>
+
+      <label>
+        Nombre de la imagen (archivo en assets/images):
+        <input type="text" [(ngModel)]="newProduct.image" name="image" placeholder="product1.png" required />
+      </label>
+
+      <div class="modal-actions">
+        <button type="button" class="cancel" (click)="closeAddProductModal()">Cancelar</button>
+        <button type="button" class="save"  (click)="saveProducts()">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL editar producto -->
+<div class="modal-backdrop" *ngIf="showProductModalEdit">
+  <div class="modal">
+    <h2>Editar Producto</h2>
+    <form>
+      <label>
+        Nombre:
+        <input type="text" [(ngModel)]="editProduct.name" name="name" required />
+      </label>
+
+      <label>
+        Descripción:
+        <input type="text" [(ngModel)]="editProduct.description" name="description" required />
+      </label>
+
+      <label>
+        Cantidad:
+        <input type="number" [(ngModel)]="editProduct.quantity" name="quantity" required />
+      </label>
+
+      <label>
+        Precio:
+        <input type="number" [(ngModel)]="editProduct.price" name="price" required />
+      </label>
+
+      <label>
+        Tiempo de procesado:
+        <input type="string" [(ngModel)]="editProduct.tempProcessing" name="tempProcessing" required />
+      </label>
+
+      <div class="modal-actions">
+        <button type="button" class="cancel" (click)="closeEditProductModal()">Cancelar</button>
+        <button type="button" class="save"  (click)="saveEditProducts()">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<app-message-modal
+  [title]="modalTitle"
+  [message]="modalMessage"
+  [isVisible]="showModal"
+  (closed)="onModalClosed()">
+</app-message-modal>
